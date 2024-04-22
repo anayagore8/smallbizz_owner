@@ -24,28 +24,3 @@ body {
   width: 40px !important;
   height: 38px !important;
 }
-.sidebar {
-  background-color: #343a40; /* Change the background color of the sidebar */
-  height: 100vh; /* Set the height of the sidebar to 100% of the viewport height */
-  position: fixed; /* Fix the position of the sidebar */
-  top: 0; /* Position the sidebar at the top of the viewport */
-  left: 0; /* Position the sidebar at the left of the viewport */
-  width: 500px; /* Set the width of the sidebar */
-  z-index: 1000; /* Set a high z-index to ensure the sidebar is above other elements */
-}
-
-.navbar-brand {
-  padding: 15px 0; /* Adjust the padding of the navbar brand */
-  width: 100%; /* Set the width of the navbar brand to 100% */
-  text-align: center; /* Center align the text within the navbar brand */
-}
-
-.navbar-nav .nav-link {
-  padding: 15px; /* Adjust the padding of the navbar links */
-}
-
-.content {
-  margin-left: 250px; /* Set the left margin to the width of the sidebar */
-  padding: 20px; /* Add padding to the content to separate it from the sidebar */
-}
-

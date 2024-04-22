@@ -1,23 +1,31 @@
 import React from "react";
+import { Button } from "react-bootstrap";
+import { useNavigate } from "react-router";
 import { useUserAuth } from "../context/UserAuthContext";
-import SidePanel from "./SidePanel";
 
 const Home = () => {
-  const { user } = useUserAuth();
-
-  // eslint-disable-next-line
-  // The following line is for future use or debugging
-  console.log(user);
-
+  const { logOut, user } = useUserAuth();
+  const navigate = useNavigate();
+  const handleLogout = async () => {
+    try {
+      await logOut();
+      navigate("/");
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
   return (
     <>
-      <SidePanel />
-      <div className="content">
-        <div className="p-4 box mt-3 text-center">
-          Welcome <br />
-          {user && user.email}
-        </div>
-        {/* Other content of your home page goes here */}
+      <div className="p-4 box mt-3 text-center">
+        Welcome <br />
+        {user && user.email}
+      </div>
+      <div className="d-grid gap-2">
+
+          <Button variant="primary" onClick={handleLogout}>
+            Log out
+          </Button>
+
       </div>
     </>
   );

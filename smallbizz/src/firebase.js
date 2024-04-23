@@ -3,13 +3,16 @@ import { getAuth } from "firebase/auth";
 import { getFirestore } from "firebase/firestore"; // Import getFirestore to access Firestore
 
 const firebaseConfig = {
-  apiKey: "AIzaSyCgHf-w0Jgf6Yq-85dvJLqBr5ZZ86yHKJE",
-  authDomain: "react-auth-7b57d.firebaseapp.com",
-  projectId: "react-auth-7b57d",
-  storageBucket: "react-auth-7b57d.appspot.com",
-  messagingSenderId: "970260360575",
-  appId: "1:970260360575:web:cac04d4df6f4371d9bfe4a"
+  apiKey: "AIzaSyD7XXwvVZ1uMhWFbaEQ3clSdBJn5sKkItU",
+  authDomain: "smallbusiness-26cbb.firebaseapp.com",
+  databaseURL: "https://smallbusiness-26cbb-default-rtdb.firebaseio.com",
+  projectId: "smallbusiness-26cbb",
+  storageBucket: "smallbusiness-26cbb.appspot.com",
+  messagingSenderId: "144105488810",
+  appId: "1:144105488810:web:be17cb9dd0acb157312bd3",
+  measurementId: "G-9GQ2ZD1647"
 };
+
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);

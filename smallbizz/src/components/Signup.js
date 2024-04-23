@@ -17,36 +17,36 @@ const Signup = () => {
   const { signUp, logIn } = useUserAuth();
   const navigate = useNavigate();
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    console.log(e.data.email);
-    setError("");
-    try {
-      // Sign up the user with additional fields
-      await signUp(email, password);
-      
-      // Generate a unique shop ID using uuidv4
-      const shopId = uuidv4();
-      
-      // Store user data in Firebase Firestore along with the generated shop ID
-      await db.collection("shops").doc(shopId).set({
-        email,
-        name,
-        address,
-        mobile,
-        category,
-        // Add more fields as needed
-      });
-      
-      // Log in the user after successful sign-up
-      await logIn(email, password);
-      
-      // Redirect to the desired location after successful login
-      navigate("/home");
-    } catch (err) {
-      setError(err.message);
-    }
-  };
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  setError("");
+  try {
+    // Sign up the user with additional fields
+    await signUp(email, password);
+    
+    // Generate a unique shop ID using uuidv4
+    const shopId = uuidv4();
+    
+    // Store user data in Firebase Firestore along with the generated shop ID
+    await db.collection("shops").doc(shopId).set({
+      email,
+      name,
+      address,
+      mobile,
+      category,
+      // Add more fields as needed
+    });
+    
+    // Log in the user after successful sign-up
+    await logIn(email, password);
+    
+    // Redirect to the desired location after successful login
+    navigate("/home");
+  } catch (err) {
+    setError(err.message);
+  }
+};
+
 
   return (
     <>

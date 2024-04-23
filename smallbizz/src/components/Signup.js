@@ -20,6 +20,7 @@ const Signup = () => {
   const { signUp, logIn } = useUserAuth();
   const navigate = useNavigate();
 
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     
@@ -48,10 +49,11 @@ const Signup = () => {
       // Redirect to the desired location after successful login
       navigate("/home");
     } catch (err) {
-      setError("errorrrrrrrrrrrrrrrrrrrrrr"+err.message);
+      setError("error"+err.message);
     }
   };
   
+
 
   return (
     <>

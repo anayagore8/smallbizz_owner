@@ -2,9 +2,12 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Form, Alert } from "react-bootstrap";
 import { Button } from "react-bootstrap";
+import axios from "axios"; // Import Axios for making HTTP requests
 import { useUserAuth } from "../context/UserAuthContext";
-import { db } from "../firebase.js"; // Import db from '../firebase'
 import { v4 as uuidv4 } from 'uuid'; // Import uuidv4 to generate unique IDs
+//import axios from "axios";
+
+
 
 const Signup = () => {
   const [email, setEmail] = useState("");
@@ -17,35 +20,39 @@ const Signup = () => {
   const { signUp, logIn } = useUserAuth();
   const navigate = useNavigate();
 
-const handleSubmit = async (e) => {
-  e.preventDefault();
-  setError("");
-  try {
-    // Sign up the user with additional fields
-    await signUp(email, password);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
     
-    // Generate a unique shop ID using uuidv4
-    const shopId = uuidv4();
-    
-    // Store user data in Firebase Firestore along with the generated shop ID
-    await db.collection("shops").doc(shopId).set({
-      email,
-      name,
-      address,
-      mobile,
-      category,
-      // Add more fields as needed
-    });
-    
-    // Log in the user after successful sign-up
-    await logIn(email, password);
-    
-    // Redirect to the desired location after successful login
-    navigate("/home");
-  } catch (err) {
-    setError(err.message);
-  }
-};
+    setError("");
+    try {
+      // Sign up the user with email and password using Firebase authentication
+      await signUp(email, password);
+      
+      // Generate a unique shop ID using uuidv4
+      const shopId = uuidv4();
+      
+      // Send user data to backend server to store in MongoDB
+      await axios.post('http://localhost:8000/signup', {
+        email,
+        password,
+        name,
+        address,
+        mobile,
+        category,
+        shopId  // Include shopId in the data sent to the server
+      });
+  
+      // Log in the user after successful sign-up
+      await logIn(email, password);
+      
+      // Redirect to the desired location after successful login
+      navigate("/home");
+    } catch (err) {
+      setError("error"+err.message);
+    }
+  };
+  
 
 
   return (

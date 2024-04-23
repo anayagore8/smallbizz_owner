@@ -7,6 +7,7 @@ import Signup from "./components/Signup";
 import ProtectedRoute from "./components/ProtectedRoute";
 import { UserAuthContextProvider } from "./context/UserAuthContext";
 
+
 function App() {
   return (
     <Container style={{ width: "400px" }}>

@@ -1,84 +1,80 @@
-import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { Form, Alert } from "react-bootstrap";
-import { Button } from "react-bootstrap";
-import GoogleButton from "react-google-button";
-import { useUserAuth } from "../context/UserAuthContext";
+ import { Link } from "react-router-dom";
+import styles from "./login.module.css";
+import { useState } from "react";
+import axios from "axios";
+
 
 const Login = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
-  const { logIn, googleSignIn } = useUserAuth();
-  const navigate = useNavigate();
+  const [data,setData]=useState({
+    email:"",
+    password:"",
+  });
+  const [error,setError]=useState("");
+
+
+  const handleChange = ({currentTarget:input}) => {
+    setData({...data,[input.name]:input.value});
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError("");
     try {
-      await logIn(email, password);
-      // Navigate to Home.js
-      navigate("/home");
-    } catch (err) {
-      setError(err.message);
+      const url="http://localhost:8000/api/auth";
+      const {data:res}=await axios.post(url,data);
+      localStorage.setItem('token', res.data);
+      window.location="/home"
     }
-  };
-
-  const handleGoogleSignIn = async (e) => {
-    e.preventDefault();
-    try {
-      await googleSignIn();
-      // Navigate to Home.js
-      navigate("/home");
-    } catch (error) {
-      console.log(error.message);
+    catch (error) {
+      if(error.response && error.response.status >= 400 && error.response.status <= 500)
+      {
+        setError(error.response.data.message);
+      }
     }
-  };
+  }
 
-  return (
-    <>
-      <div className="p-4 box">
-        <h2 className="mb-3">Firebase/ React Auth Login</h2>
-
-        {error && <Alert variant="danger">{error}</Alert>}
-
-        <Form onSubmit={handleSubmit}>
-          <Form.Group className="mb-3" controlId="formBasicEmail">
-            <Form.Control
+  return(
+    <div className={styles.login_container}>
+      <div className={styles.login_form_container}>
+        <div className={styles.left}>
+         <form className={styles.form_container} onSubmit={handleSubmit}>
+            <h1>Login Account</h1>
+            
+            <input
               type="email"
-              placeholder="Email address"
-              onChange={(e) => setEmail(e.target.value)}
+              placeholder="Email"
+              name="email"
+              onChange={handleChange}
+              value={data.email}
+              required
+              className={styles.input}
             />
-          </Form.Group>
-
-          <Form.Group className="mb-3" controlId="formBasicPassword">
-            <Form.Control
+            <input
               type="password"
               placeholder="Password"
-              onChange={(e) => setPassword(e.target.value)}
+              name="password"
+              onChange={handleChange}
+              value={data.password}
+              required
+              className={styles.input}
             />
-          </Form.Group>
-
-          <div className="d-grid gap-2">
-            <Button variant="primary" type="Submit">
-              Log In
-            </Button>
-          </div>
-        </Form>
-        <hr />
-        <div>
-          <GoogleButton
-            className="g-btn"
-            type="dark"
-            onClick={handleGoogleSignIn}
-          />
+            {error && <div className={styles.error_msg}>{error}</div>}
+            <button type="submit" className={styles.green_btn}>
+              Sign In
+            </button>
+            </form>
+         
         </div>
-      </div>
-      <div className="p-4 box mt-3 text-center">
-        Don't have an account? <Link to="/signup">Sign up</Link>
-      </div>
-    </>
+        <div className={styles.right}>
+         <h1>New Here?</h1>
+          <Link to="/signup">
+            <button type="button" className={styles.white_btn}>
+              Sign up
+            </button>
+          </Link>
+         
+            </div>
+            </div>
+    </div>
   );
-};
-
+}
 export default Login;

@@ -28,5 +28,7 @@ export const SidebarData=[
         title:"Your Orders",
         icon: <LocalShippingIcon/>,
         link:"/orders"
-    },
+    }
+
+   
 ]

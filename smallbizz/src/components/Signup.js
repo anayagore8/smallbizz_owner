@@ -1,131 +1,140 @@
-import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Form, Alert } from "react-bootstrap";
-import { Button } from "react-bootstrap";
-import axios from "axios"; // Import Axios for making HTTP requests
-import { useUserAuth } from "../context/UserAuthContext";
-import { v4 as uuidv4 } from 'uuid'; // Import uuidv4 to generate unique IDs
-//import axios from "axios";
-
+import styles from "./Signup.module.css";
+import { useState } from "react";
+import axios from "axios";
 
 
 const Signup = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [name, setName] = useState("");
-  const [address, setAddress] = useState("");
-  const [mobile, setMobile] = useState("");
-  const [category, setCategory] = useState("");
-  const [error, setError] = useState("");
-  const { signUp, logIn } = useUserAuth();
-  const navigate = useNavigate();
+  const [data,setData]=useState({
+    shopName:"",
+    email:"",
+    password:"",
+    ownerName:"",
+    mobileNo:"",
+    pinCode:"",
+    address:"",
+    category:""
+  });
+  const [error,setError]=useState("");
+  const navigate=useNavigate();
 
+
+  const handleChange = ({currentTarget:input}) => {
+    setData({...data,[input.name]:input.value});
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
-    setError("");
     try {
-      // Sign up the user with email and password using Firebase authentication
-      await signUp(email, password);
-      
-      // Generate a unique shop ID using uuidv4
-      const shopId = uuidv4();
-      
-      // Send user data to backend server to store in MongoDB
-      await axios.post('http://localhost:8000/signup', {
-        email,
-        password,
-        name,
-        address,
-        mobile,
-        category,
-        shopId  // Include shopId in the data sent to the server
-      });
-  
-      // Log in the user after successful sign-up
-      await logIn(email, password);
-      
-      // Redirect to the desired location after successful login
-      navigate("/home");
-    } catch (err) {
-      setError("error"+err.message);
+      const url="http://localhost:8000/api/shops";
+      const {data:res}=await axios.post(url,data);
+      navigate("/login");
+      console.log(res.message);
     }
-  };
-  
+    catch (error) {
+      if(error.response && error.response.status >= 400 && error.response.status <= 500)
+      {
+        setError(error.response.data.message);
+      }
+    }
+  }
 
-
-  return (
-    <>
-      <div className="p-4 box">
-        <h2 className="mb-3">Firebase/ React Auth Signup</h2>
-        
-        {error && <Alert variant="danger">{error}</Alert>}
-
-        <Form onSubmit={handleSubmit }>
-          <Form.Group className="mb-3" controlId="formBasicEmail">
-            <Form.Control
-              type="email"
-              
-              placeholder="Email address"
-              onChange={(e) => setEmail(e.target.value)}
+  return(
+    <div className={styles.signup_container}>
+      <div className={styles.signup_form_container}>
+        <div className={styles.left}>
+          <h1>Welcome Back</h1>
+          <Link to="/login">
+            <button type="button" className={styles.white_btn}>
+              Sign in
+            </button>
+          </Link>
+        </div>
+        <div className={styles.right}>
+          <form className={styles.form_container} onSubmit={handleSubmit}>
+            <h1>Create Account</h1>
+            <input
+              type="text"
+              placeholder="Shop Name"
+              name="shopName"
+              onChange={handleChange}
+              value={data.shopName}
+              required
+              className={styles.input}
             />
-          </Form.Group>
-
-          <Form.Group className="mb-3" controlId="formBasicPassword">
-            <Form.Control
+            <input
+              type="email"
+              placeholder="Email"
+              name="email"
+              onChange={handleChange}
+              value={data.email}
+              required
+              className={styles.input}
+            />
+            <input
               type="password"
               placeholder="Password"
-              onChange={(e) => setPassword(e.target.value)}
+              name="password"
+              onChange={handleChange}
+              value={data.password}
+              required
+              className={styles.input}
             />
-          </Form.Group>
-
-          <Form.Group className="mb-3" controlId="formBasicName">
-            <Form.Control
-              type="text"
-              placeholder="Full Name"
-              onChange={(e) => setName(e.target.value)}
+              
+            
+            <input
+            type="text"
+            placeholder="Owner Name"
+            name="ownerName"
+            onChange={handleChange}
+            value={data.ownerName}
+            required
+            className={styles.input}
             />
-          </Form.Group>
-
-          <Form.Group className="mb-3" controlId="formBasicAddress">
-            <Form.Control
-              type="text"
-              placeholder="Address"
-              onChange={(e) => setAddress(e.target.value)}
+            <input
+            type="text"
+            placeholder="Mobile No"
+            name="mobileNo"
+            onChange={handleChange}
+            value={data.mobileNo}
+            required
+            className={styles.input}
             />
-          </Form.Group>
-
-          <Form.Group className="mb-3" controlId="formBasicMobile">
-            <Form.Control
-              type="text"
-              placeholder="Mobile Number"
-              onChange={(e) => setMobile(e.target.value)}
+            <input
+            type="text"
+            placeholder="Pin Code"
+            name="pinCode"
+            onChange={handleChange}
+            value={data.pinCode}
+            required
+            className={styles.input}
             />
-          </Form.Group>
-
-          <Form.Group className="mb-3" controlId="formBasicCategory">
-            <Form.Control as="select" onChange={(e) => setCategory(e.target.value)}>
-              <option value="">Select Category</option>
-              <option value="Retail">Retail</option>
-              <option value="Food and Beverage">Food and Beverage</option>
-              <option value="Services">Services</option>
-              {/* Add other categories here */}
-            </Form.Control>
-          </Form.Group>
-
-          <div className="d-grid gap-2">
-            <Button variant="primary" type="submit">
-              Sign up
-            </Button>
-          </div>
-        </Form>
-      </div>
-      <div className="p-4 box mt-3 text-center">
-        Already have an account? <Link to="/">Log In</Link>
-      </div>
-    </>
+            <input
+            type="text"
+            placeholder="Address"
+            name="address"
+            onChange={handleChange}
+            value={data.address}
+            className={styles.input}
+            required
+            />
+            <input
+            type="text"
+            placeholder="Category"
+            name="category"
+            onChange={handleChange}
+            value={data.category}
+            className={styles.input}
+            required
+            />
+            {error && <div className={styles.error_msg}>{error}</div>}
+            <button type="submit" className={styles.green_btn}>
+              Sign Up
+            </button>
+            </form>
+            </div>
+            </div>
+    </div>
   );
-};
-
+}
 export default Signup;
